@@ -31,7 +31,7 @@ if sys.platform.startswith('win'):
 
 
 # 하드코딩된 티커 리스트
-TICKERS = ['AAPL', 'AMZN', 'NVDA', 'V', 'META', 'GOOGL', 'PAVE', 'TSLA', 'MSFT', 'QQQM', 'ORCL', 'AVGO', 'PLTR', 'RKLB', 'BITQ', 'BRK-B', 'WMT']
+TICKERS = ['AAPL', 'AMZN', 'NVDA', 'V', 'META', 'GOOGL', 'PAVE', 'TSLA', 'MSFT', 'QQQM', 'ORCL', 'AVGO', 'PLTR', 'RKLB', 'BITQ', 'BRK-B', 'WMT', 'QQQM', 'IGV', 'XSW', 'GOOGL', 'XLF', 'SCHD', 'DGRW', 'HOOD', 'XLV', 'WM', 'GEV', 'MGK', 'DGRW', 'SPYV']
 
 
 def get_stock_data(ticker: str) -> Dict[str, Any]:
