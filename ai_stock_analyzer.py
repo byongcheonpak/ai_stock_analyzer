@@ -30,8 +30,16 @@ if sys.platform.startswith('win'):
     sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 
-# 하드코딩된 티커 리스트
-TICKERS = ['AAPL', 'AMZN', 'NVDA', 'V', 'META', 'GOOGL', 'PAVE', 'TSLA', 'MSFT', 'QQQM', 'ORCL', 'AVGO', 'PLTR', 'RKLB', 'BITQ', 'BRK-B', 'WMT', 'QQQM', 'IGV', 'XSW', 'GOOGL', 'XLF', 'SCHD', 'DGRW', 'HOOD', 'XLV', 'WM', 'GEV', 'MGK', 'DGRW', 'SPYV']
+# 섹터별 티커 리스트
+SECTOR_TICKERS = {
+    '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'AMD', 'PLTR'],
+    '🛒 소비재/전자상거래 (Consumer & E-commerce)': ['AMZN', 'TSLA', 'WMT', 'WM'],
+    '💳 금융 (Financial)': ['V', 'BRK-B'],
+    '🏗️ 산업/인프라 (Industrial & Infrastructure)': ['PAVE', 'GEV'],
+    '🚀 우주/방산 (Aerospace & Defense)': ['RKLB'],
+    '💰 비트코인/암호화폐 (Cryptocurrency)': ['BITQ', 'HOOD'],
+    '📈 ETF (Exchange Traded Funds)': ['QQQM', 'IGV', 'XSW', 'XLF', 'SCHD', 'DGRW', 'XLV', 'MGK', 'SPYV']
+}
 
 
 def get_stock_data(ticker: str) -> Dict[str, Any]:
@@ -225,18 +233,34 @@ def main():
     """메인 실행 함수"""
     print("Python 주식 포트폴리오 분석을 시작합니다...\n")
     
-    for i, ticker in enumerate(TICKERS):
-        # 1. 주식 데이터 수집
-        stock_data = get_stock_data(ticker)
+    total_tickers = sum(len(tickers) for tickers in SECTOR_TICKERS.values())
+    current_ticker_count = 0
+    
+    for sector_name, tickers in SECTOR_TICKERS.items():
+        # 섹터 헤더 출력
+        print(f"\n{'=' * 60}")
+        print(f"{sector_name}")
+        print(f"{'=' * 60}\n")
         
-        # 2. 결과 포맷팅 및 출력
-        result = format_stock_summary(stock_data, ticker)
-        print(result)
-        print("\n---")
+        for i, ticker in enumerate(tickers):
+            current_ticker_count += 1
+            
+            # 1. 주식 데이터 수집
+            stock_data = get_stock_data(ticker)
+            
+            # 2. 결과 포맷팅 및 출력
+            result = format_stock_summary(stock_data, ticker)
+            print(result)
+            
+            # 섹터 내 마지막 종목이 아닌 경우에만 구분선 출력
+            if i < len(tickers) - 1:
+                print("\n---")
+            
+            # 3. API 호출 간 지연 (0.5초) - 전체 마지막 종목이 아닌 경우
+            if current_ticker_count < total_tickers:
+                time.sleep(0.5)
         
-        # 3. API 호출 간 지연 (0.5초)
-        if i < len(TICKERS) - 1:  # 마지막 티커가 아닌 경우에만 지연
-            time.sleep(0.5)
+        print("\n")  # 섹터 간 공백
     
     print("모든 분석이 완료되었습니다!")
 
