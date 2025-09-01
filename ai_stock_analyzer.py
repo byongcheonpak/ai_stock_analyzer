@@ -33,9 +33,9 @@ if sys.platform.startswith('win'):
 # 섹터별 티커 리스트
 SECTOR_TICKERS = {
     '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'AMD', 'PLTR'],
-    '🛒 소비재/전자상거래 (Consumer & E-commerce)': ['AMZN', 'TSLA', 'WMT', 'WM'],
+    '🛒 소비재/전자상거래 (Consumer & E-commerce)': ['AMZN', 'TSLA', 'WMT'],
     '💳 금융 (Financial)': ['V', 'BRK-B'],
-    '🏗️ 산업/인프라 (Industrial & Infrastructure)': ['PAVE', 'GEV'],
+    '🏗️ 산업/인프라 (Industrial & Infrastructure)': ['PAVE', 'GEV', 'WM'],
     '🚀 우주/방산 (Aerospace & Defense)': ['RKLB'],
     '💰 비트코인/암호화폐 (Cryptocurrency)': ['BITQ', 'HOOD'],
     '📈 ETF (Exchange Traded Funds)': ['QQQM', 'IGV', 'XSW', 'XLF', 'SCHD', 'DGRW', 'XLV', 'MGK', 'SPYV']
