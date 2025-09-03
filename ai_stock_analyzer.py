@@ -32,13 +32,13 @@ if sys.platform.startswith('win'):
 
 # 섹터별 티커 리스트
 SECTOR_TICKERS = {
-    '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'AMD', 'PLTR'],
+    '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'PLTR'],
     '🛒 소비재/전자상거래 (Consumer & E-commerce)': ['AMZN', 'TSLA', 'WMT'],
     '💳 금융 (Financial)': ['V', 'BRK-B'],
     '🏗️ 산업/인프라 (Industrial & Infrastructure)': ['PAVE', 'GEV', 'WM'],
     '🚀 우주/방산 (Aerospace & Defense)': ['RKLB'],
     '💰 비트코인/암호화폐 (Cryptocurrency)': ['BITQ', 'HOOD'],
-    '📈 ETF (Exchange Traded Funds)': ['QQQM', 'IGV', 'XSW', 'XLF', 'SCHD', 'DGRW', 'XLV', 'MGK', 'SPYV']
+    '📈 ETF (Exchange Traded Funds)': ['QQQM', 'IGV', 'XSW', 'XLF', 'SCHD', 'DGRW', 'XLV', 'MGK', 'SPYV', 'GLDM']
 }
 
 
@@ -127,7 +127,13 @@ def get_stock_data(ticker: str) -> Dict[str, Any]:
             try:
                 rate = (year_high - current_price) / year_high * 100
                 if not pd.isna(rate):
-                    drop_rate = f"-{round(rate, 2)}%"
+                    rounded_rate = round(rate, 2)
+                    if rounded_rate < 0:
+                        # 최고가보다 높은 경우: "+"와 절대값으로 표시 (예: +2.41%)
+                        drop_rate = f"+{abs(rounded_rate)}%"
+                    else:
+                        # 최고가보다 낮은 경우: "-"로 하락률 표시 (예: -10.50%)
+                        drop_rate = f"-{rounded_rate}%"
             except:
                 pass
         
