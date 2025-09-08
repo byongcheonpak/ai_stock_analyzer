@@ -32,13 +32,16 @@ if sys.platform.startswith('win'):
 
 # 섹터별 티커 리스트
 SECTOR_TICKERS = {
-    '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'PLTR'],
+    '🏢 기술주 (Technology)': ['AAPL', 'MSFT', 'GOOGL', 'META', 'NVDA', 'ORCL', 'AVGO', 'PLTR', 'QQQM', 'IGV', 'XSW', 'MGK', 'MAGS', 'IGM'],
     '🛒 소비재/전자상거래 (Consumer & E-commerce)': ['AMZN', 'TSLA', 'WMT'],
-    '💳 금융 (Financial)': ['V', 'BRK-B'],
+    '💳 금융 (Financial)': ['V', 'XLF', 'IAI'],
     '🏗️ 산업/인프라 (Industrial & Infrastructure)': ['PAVE', 'GEV', 'WM'],
     '🚀 우주/방산 (Aerospace & Defense)': ['RKLB'],
     '💰 비트코인/암호화폐 (Cryptocurrency)': ['BITQ', 'HOOD'],
-    '📈 ETF (Exchange Traded Funds)': ['QQQM', 'IGV', 'XSW', 'XLF', 'SCHD', 'DGRW', 'XLV', 'MGK', 'SPYV', 'GLDM']
+    '💵 배당 (Dividend & Income)': ['SCHD', 'DGRW'],
+    '🧬 헬스케어 (Healthcare)': ['XLV'],
+    '🥇 원자재/귀금속 (Commodities & Gold)': ['GLDM'],
+    '📉 가치주 (Value Stocks)': ['SPYV']
 }
 
 
@@ -144,7 +147,11 @@ def get_stock_data(ticker: str) -> Dict[str, Any]:
             if info:
                 change_percent = info.get('regularMarketChangePercent')
                 if change_percent is not None and not pd.isna(change_percent):
-                    daily_change = f"{round(float(change_percent), 2)}%"
+                    rate = round(float(change_percent), 2)
+                    if rate > 0:
+                        daily_change = f"+{rate}%"
+                    else:
+                        daily_change = f"{rate}%"
         except:
             pass
         
@@ -189,17 +196,23 @@ def format_stock_summary(data: Dict[str, Any], ticker: str) -> str:
     drop_str = drop_rate if drop_rate != "N/A" else "-0.00%"
     daily_str = daily_change if daily_change != "N/A" else "0.00%"
     
+    
     # 고점대비하락률에 따른 색상 설정
     def get_drop_color_code(drop_rate_str):
         if drop_rate_str == "N/A" or drop_rate_str == "-0.00%":
             return ""
         
         try:
-            # "-12.34%" 에서 숫자 추출
-            rate_num = float(drop_rate_str.replace("-", "").replace("%", ""))
-            
-            if rate_num >= 10:
-                return "\033[95m"  # 보라색 (10% 이상)
+            # "+12.34%" 또는 "-12.34%" 에서 부호와 숫자 추출
+            if drop_rate_str.startswith("+"):
+                return "\033[94m"  # 파란색 (플러스)
+            elif drop_rate_str.startswith("-"):
+                # "-12.34%" 에서 숫자 추출
+                rate_num = float(drop_rate_str.replace("-", "").replace("%", ""))
+                if rate_num >= 10:
+                    return "\033[95m"  # 보라색 (10% 이상 하락)
+                else:
+                    return "\033[91m"  # 빨간색 (10% 미만 하락)
             else:
                 return ""
         except:
